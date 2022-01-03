@@ -16,6 +16,9 @@ class Location(object):
         self.z = z
         self.pos = (self.x, self.y, self.z)
 
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
     def distance(self, ot_location) -> float:
         """
         this function calculates the distance of this point from another given point

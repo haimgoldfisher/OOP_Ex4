@@ -8,5 +8,29 @@ class Agent:
         self.speed = speed
         self.pos = loc
         self.path = []
+        self.time2poke = 0
+        self.time2curr_dest = 0
+        self.time2final_dest = 0
+        self.curr_node = dest
+        if dest == -1:
+            self.curr_node = src
 
-
+    def __eq__(self, other):
+        # ans = True
+        if self.key != other.key:
+            return False
+        # if self.value != other.value:
+        #     return False
+        # if self.src != other.src:
+        #     return False
+        # if self.dest != other.dest:
+        #     return False
+        # if self.speed != other.speed:
+        #     return False
+        # if self.pos != other.pos:
+        #     return False
+        # if self.path != other.path:
+        #     return False
+        # if self.time2dest != other.time2dest:
+        #     return False
+        return True
