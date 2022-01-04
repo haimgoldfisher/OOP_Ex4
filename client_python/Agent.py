@@ -14,6 +14,7 @@ class Agent:
         self.curr_node = dest
         if dest == -1:
             self.curr_node = src
+        self.pokemons = []
 
     def __eq__(self, other):
         # ans = True

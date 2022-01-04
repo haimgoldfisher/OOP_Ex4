@@ -22,7 +22,7 @@ class MyGame:
         self.pokemons = []
         self.agents = []
         self.graph = DiGraph()
-        self.graph_alog = GraphAlgo(self.graph)
+        self.graph_algo = GraphAlgo(self.graph)
         self.score = 0
         self.move_counter = 0
         self.client = Client()
@@ -48,7 +48,7 @@ class MyGame:
         # self.load_agents()
         self.load_graph()
         self.load_info()
-        self.graph_alog = GraphAlgo(self.graph)
+        self.graph_algo = GraphAlgo(self.graph)
         self.client.get_info()
 
         for n in self.graph.key_nodes.values():
@@ -278,14 +278,14 @@ class MyGame:
                 src_nd = self.graph.key_nodes.get(agent.curr_node)
                 dest_nd = self.graph.key_nodes.get(next_node)
                 edge_speed = src_nd.child_weight.get(next_node)
-                # x_squared = (float(dest_nd.pos[0]) - float(src_nd.pos[0])) * (float(dest_nd.pos[0]) - float(src_nd.pos[0]))
-                # y_squared = (float(dest_nd.pos[1]) - float(src_nd.pos[1])) * (float(dest_nd.pos[1]) - float(src_nd.pos[1]))
-                x_squared = (self.my_scale2(float(dest_nd.pos[0]), x=True) - self.my_scale2(float(src_nd.pos[0]),
-                                                                                            x=True)) ** 2
-                y_squared = (self.my_scale2(float(dest_nd.pos[1]), y=True) - self.my_scale2(float(src_nd.pos[1]),
-                                                                                            y=True)) ** 2
+                x_squared = (float(dest_nd.pos[0]) - float(src_nd.pos[0])) * (float(dest_nd.pos[0]) - float(src_nd.pos[0]))
+                y_squared = (float(dest_nd.pos[1]) - float(src_nd.pos[1])) * (float(dest_nd.pos[1]) - float(src_nd.pos[1]))
+                # x_squared = (self.my_scale2(float(dest_nd.pos[0]), x=True) - self.my_scale2(float(src_nd.pos[0]),
+                #                                                                             x=True)) ** 2
+                # y_squared = (self.my_scale2(float(dest_nd.pos[1]), y=True) - self.my_scale2(float(src_nd.pos[1]),
+                #                                                                             y=True)) ** 2
                 dist_src2dest = math.sqrt(x_squared + y_squared)  # src to pokemon
-                time_to_dest = (dist_src2dest / edge_speed)
+                time_to_dest = (dist_src2dest / edge_speed) #/ 8.866013320973768e-07
 
                 agent.curr_node = next_node
                 agent.time2curr_dest = time_to_dest
@@ -295,7 +295,7 @@ class MyGame:
                     '{"agent_id":' + str(agent.key) + ', "next_node_id":' + str(next_node) + '}')
                 ttl = self.client.time_to_end()
                 print(ttl, self.client.get_info())
-        min_time2dest = 100
+        min_time2dest = math.inf
         for agent in self.agents:
             if agent.time2curr_dest > agent.time2poke:
                 min_time2dest = min(min_time2dest, agent.time2poke)
@@ -307,7 +307,7 @@ class MyGame:
             agent.time2final_dest -= min_time2dest
         # self.clock.tick(min_time2dest * 10)
         # time.sleep(min_time2dest*60)
-        self.refresh_time = int(min_time2dest * 1000)
+        self.refresh_time = int(min_time2dest)
         # self.client.move()
 
     def allocate_agent(self, pokemon):
@@ -340,9 +340,9 @@ class MyGame:
                 chosen_agent = agent
 
         if chosen_agent is not None:
-            chosen_agent.time2poke = min_time2poke
+            chosen_agent.time2poke = min_time2poke# / 8.866013320973768e-07
             chosen_agent.path += min_path
-            chosen_agent.time2final_dest = time2fdest  ##### need to allocate time to time2dest
+            chosen_agent.time2final_dest = time2fdest #/ 8.866013320973768e-07 ##### need to allocate time to time2dest
         pokemon.agent_aloc = agent_key
         return agent_key
 
@@ -368,7 +368,7 @@ class MyGame:
         curr_dest = agent.curr_node  ################ maybe a problem
         if len(agent.path) > 0:
             curr_dest = agent.path[len(agent.path) - 1]
-        path_time, path = self.shortest_path(curr_dest, src)
+        path_time, path = self.graph_algo.shortest_path(curr_dest, src)
         path.append(dest)
         path_time += agent.time2final_dest
 
@@ -376,17 +376,17 @@ class MyGame:
         dest_nd = self.graph.key_nodes.get(dest)
         edge_speed = src_nd.child_weight.get(dest)  # weghit
 
-        # x_squared = (pokemon.pos.x - float(src_nd.pos[0])) * (pokemon.pos.x - float(src_nd.pos[0]))
-        # y_squared = (pokemon.pos.y - float(src_nd.pos[1])) * (pokemon.pos.y - float(src_nd.pos[1]))
-        x_squared = (self.my_scale2(pokemon.pos.x, x=True) - self.my_scale2(float(src_nd.pos[0]), x=True)) ** 2
-        y_squared = (self.my_scale2(pokemon.pos.y, y=True) - self.my_scale2(float(src_nd.pos[1]), y=True)) ** 2
+        x_squared = (pokemon.pos.x - float(src_nd.pos[0])) * (pokemon.pos.x - float(src_nd.pos[0]))
+        y_squared = (pokemon.pos.y - float(src_nd.pos[1])) * (pokemon.pos.y - float(src_nd.pos[1]))
+        # x_squared = (self.my_scale2(pokemon.pos.x, x=True) - self.my_scale2(float(src_nd.pos[0]), x=True)) ** 2
+        # y_squared = (self.my_scale2(pokemon.pos.y, y=True) - self.my_scale2(float(src_nd.pos[1]), y=True)) ** 2
         dist_src2poke = math.sqrt(x_squared + y_squared)  # src to pokemon
         time_to_poke = path_time + (dist_src2poke / edge_speed)
 
-        # x_squared = (float(dest_nd.pos[0]) - float(src_nd.pos[0])) * (float(dest_nd.pos[0]) - float(src_nd.pos[0]))
-        # y_squared = (float(dest_nd.pos[1]) - float(src_nd.pos[1])) * (float(dest_nd.pos[1]) - float(src_nd.pos[1]))
-        x_squared = (self.my_scale2(float(dest_nd.pos[0]), x=True) - self.my_scale2(float(src_nd.pos[0]), x=True)) ** 2
-        y_squared = (self.my_scale2(float(dest_nd.pos[1]), y=True) - self.my_scale2(float(src_nd.pos[1]), y=True)) ** 2
+        x_squared = (float(dest_nd.pos[0]) - float(src_nd.pos[0])) * (float(dest_nd.pos[0]) - float(src_nd.pos[0]))
+        y_squared = (float(dest_nd.pos[1]) - float(src_nd.pos[1])) * (float(dest_nd.pos[1]) - float(src_nd.pos[1]))
+        # x_squared = (self.my_scale2(float(dest_nd.pos[0]), x=True) - self.my_scale2(float(src_nd.pos[0]), x=True)) ** 2
+        # y_squared = (self.my_scale2(float(dest_nd.pos[1]), y=True) - self.my_scale2(float(src_nd.pos[1]), y=True)) ** 2
         dist_src2dest = math.sqrt(x_squared + y_squared)  # src to dest
         time_to_fdest = path_time + (dist_src2dest / edge_speed)
 
@@ -415,78 +415,51 @@ class MyGame:
                             if pokemon.type < 0 and nd.key > ch_nd.key:
                                 return nd.key, ch_nd.key
 
-    def shortest_path(self, id1: int, id2: int) -> (float, list):
-        """
-        Returns the shortest path from node id1 to node id2 using Dijkstra's Algorithm.
-        this function use Dijkstra's Algorithm with PriorityQueue.
-        @param id1: The start node id
-        @param id2: The end node id
-        @return: The distance of the path, a list of the nodes ids that the path goes through
-        """
-        path = []
-        if id1 == id2:
-            path.append(id1)
-            return 0, path
-        previous = dict()
-        times = dict()
-        visited = dict()
-        keys = self.graph.key_nodes.copy()
-        pq = queue.PriorityQueue()
-        for key in keys.keys():
-            times[key] = math.inf
-        times[id1] = 0
-        pq.put((0, id1))
-        while visited.__len__() != keys.__len__():
-            if pq.qsize() == 0:
-                break
-            curr_key = pq.get()[1]
-            if visited.get(curr_key) is not None:
-                continue
-            visited[curr_key] = True
-            curr_nd = keys.get(curr_key)
-            for edge in curr_nd.child_weight.items():
-                curr_dest = edge[0]
-                curr_speed = edge[1]
-                if visited.get(curr_dest) is not None:
-                    continue
-                curr_time = times.get(curr_dest)
-                # x_squared = (float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0])) * (float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0]))
-                # y_squared = (float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1])) * (float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1]))
-                x_squared = (self.my_scale2(float(keys.get(curr_dest).pos[0]), x=True) - self.my_scale2(
-                    float(curr_nd.pos[0]), x=True)) ** 2
-                y_squared = (self.my_scale2(float(keys.get(curr_dest).pos[1]), y=True) - self.my_scale2(
-                    float(curr_nd.pos[1]), y=True)) ** 2
-                dist_src2dest = math.sqrt(x_squared + y_squared)
-                tmp_time = dist_src2dest / curr_speed
-                new_time = times.get(curr_key) + tmp_time
-                if new_time < curr_time:
-                    times[curr_dest] = new_time
-                    previous[curr_dest] = curr_key
-                pq.put((times.get(curr_dest), curr_dest))
-        if times.get(id2) == math.inf:
-            return math.inf, []
-        curr = id2
-        while curr != id1:
-            path.insert(0, curr)
-            curr = previous.get(curr)
-        path.insert(0, id1)
-        ti = times.get(id2)
-        return ti, path
+
+
+
 
 
 if __name__ == '__main__':
     mg = MyGame()
     mg.load()
     mg.start2()
-
-    # mg.update_gui()
+    # mg.client.start()
+    # mg.load_pokemons()
+    # mg.load_agents()
+    # x1 = mg.agents[0].pos.x
+    # y1 = mg.agents[0].pos.y
+    # for pokemon in mg.pokemons:
+    #     if pokemon.agent_aloc == -1:
+    #         mg.allocate_agent(pokemon)
+    # mg.complex_move_agents()
+    # pygame.time.wait(100)
+    # mg.client.move()
+    # # mg.update_gui()
+    # mg.load_pokemons()
+    # mg.load_agents()
+    # x2 = mg.agents[0].pos.x
+    # y2 = mg.agents[0].pos.y
+    # for pokemon in mg.pokemons:
+    #     if pokemon.agent_aloc == -1:
+    #         mg.allocate_agent(pokemon)
+    # mg.complex_move_agents()
+    # pygame.time.wait(100)
+    # mg.client.move()
+    # # mg.update_gui()
     #
-    # while True:
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             pygame.quit()
-    #             exit(0)
-    # s = set()
-    # s.
-    # s =[]
-    # s.
+    # x_squared = (x1 - x2) ** 2
+    # y_squared = (y1 - y2) ** 2
+    # dist = math.sqrt(x_squared+y_squared)
+    # my_t = dist / 1.4620268165085584
+    # norm = my_t/100
+    # print(x1)
+    # print(y1)
+    # print(x2)
+    # print(y2)
+    # print( x_squared)
+    # print( y_squared)
+    # print(dist )
+    # print( my_t)
+    # print(norm )
+    # 8.866013320973768e-07
