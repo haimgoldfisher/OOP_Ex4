@@ -8,6 +8,7 @@ class Pokemon:
         self.type = t
         self.pos = loc
         self.agent_aloc = -1
+        # self.time2catch
 
     def __eq__(self, other):
         if self.value != other.value:
