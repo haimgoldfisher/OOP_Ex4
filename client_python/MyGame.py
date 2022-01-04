@@ -1,4 +1,5 @@
 import copy
+import itertools
 import math
 import queue
 import time
@@ -58,11 +59,11 @@ class MyGame:
             self.max_y = max(self.max_y, float(n.pos[1]))
         self.update_gui()
 
-    def update(self):
-        """
-        updates the game status
-        """
-        pass
+    # def update(self):
+    #     """
+    #     updates the game status
+    #     """
+    #     pass
 
     def load_pokemons(self):
         # self.pokemons = []
@@ -340,9 +341,10 @@ class MyGame:
                 chosen_agent = agent
 
         if chosen_agent is not None:
+            # chosen_agent.pokemons.append()
             chosen_agent.time2poke = min_time2poke# / 8.866013320973768e-07
             chosen_agent.path += min_path
-            chosen_agent.time2final_dest = time2fdest #/ 8.866013320973768e-07 ##### need to allocate time to time2dest
+            chosen_agent.time2final_dest = time2fdest #/ 8.866013320973768e-07
         pokemon.agent_aloc = agent_key
         return agent_key
 
@@ -363,6 +365,7 @@ class MyGame:
         if a - eps < poke_pos.y < a + eps:
             return True
         return False
+
     def calc_time(self, agent, pokemon):
         src, dest = self.get_poke_edge(pokemon)
         curr_dest = agent.curr_node  ################ maybe a problem
@@ -389,8 +392,113 @@ class MyGame:
         # y_squared = (self.my_scale2(float(dest_nd.pos[1]), y=True) - self.my_scale2(float(src_nd.pos[1]), y=True)) ** 2
         dist_src2dest = math.sqrt(x_squared + y_squared)  # src to dest
         time_to_fdest = path_time + (dist_src2dest / edge_speed)
-
+        # path_
         return time_to_poke, path, time_to_fdest
+
+    def calc_time_tsp(self, agent):
+        id_distances = {}
+        id_previous = {}
+        srcs = []
+        dests = []
+        curr_dest = agent.curr_node
+
+        ans, curr_distances, curr_previous = self.dijkstra(curr_dest)
+        id_distances[curr_dest] = curr_distances
+        id_previous[curr_dest] = curr_previous
+
+        for pokemon in agent.pokemons:
+            src, dest = self.get_poke_edge(pokemon)
+            srcs.append(src)
+            dests.append(dest)
+            ans, curr_distances, curr_previous = self.dijkstra(dest)
+            id_distances[dest] = curr_distances
+            id_previous[dest] = curr_previous
+
+        min_time2all = math.inf
+        min_perm = []
+        all_perms = itertools.permutations([range(len(srcs))]) # shuffle indecies that when we call src[perm[i]] we will get different src
+        for perm in all_perms:
+            index = perm[0]
+            curr_time2all = id_distances.get(curr_dest).get(srcs[index])
+
+            curr_speed= float(self.graph.key_nodes.get(srcs[index]).child_weight.get(dest[index]))
+            x_squared = (float(self.graph.key_nodes.get(srcs[index]).pos[0]) - float(self.graph.key_nodes.get(dests[index]).pos[0])) ** 2
+            y_squared = (float(self.graph.key_nodes.get(srcs[index]).pos[1]) - float(self.graph.key_nodes.get(dests[index]).pos[1])) ** 2
+            dist_src2dest = math.sqrt(x_squared + y_squared)
+            tmp_time = dist_src2dest / curr_speed
+
+            curr_time2all += tmp_time
+
+            for i in range(len(perm) - 1):
+                index1 = perm[i]
+                index2 = perm[i+1]
+                curr_time2all += id_distances.get(dests[index1]).get(srcs[index2])
+
+                curr_speed = float(self.graph.key_nodes.get(srcs[index2]).child_weight.get(dest[index2]))
+                x_squared = (float(self.graph.key_nodes.get(dests[index2]).pos[0]) - float(self.graph.key_nodes.get(srcs[index2]).pos[0])) ** 2
+                y_squared = (float(self.graph.key_nodes.get(dests[index2]).pos[1]) - float(self.graph.key_nodes.get(srcs[index2]).pos[1])) ** 2
+                dist_src2dest = math.sqrt(x_squared + y_squared)
+                tmp_time = dist_src2dest / curr_speed
+
+                curr_time2all += tmp_time
+            if curr_time2all < min_time2all:
+                min_time2all = curr_time2all
+                min_perm = perm
+
+        full_min_path = []
+
+        index = perm[0]
+        id1 = curr_dest
+        id2 = srcs[index]
+        curr_previous = id_previous.get(id1)
+        curr = id2
+        ppath = []
+        while curr != id1:
+            ppath.insert(0, curr)
+            curr = curr_previous.get(curr)
+        ppath.insert(0, id1)
+        full_min_path += ppath
+
+        for i in range(len(min_perm) - 1):
+            index1 = min_perm[i]
+            index2 = min_perm[i + 1]
+            id1 = dests[index1]
+            id2 = srcs[index2]
+            curr_previous = id_previous.get(id1)
+            curr = id2
+            ppath = []
+            while curr != id1:
+                ppath.insert(0, curr)
+                curr = curr_previous.get(curr)
+            ppath.insert(0, id1)
+            full_min_path += ppath
+
+        return full_min_path, min_time2all
+
+
+        # path_time, path = self.graph_algo.shortest_path(curr_dest, src)
+        # path.append(dest)
+        # path_time += agent.time2final_dest
+        #
+        # src_nd = self.graph.key_nodes.get(src)
+        # dest_nd = self.graph.key_nodes.get(dest)
+        # edge_speed = src_nd.child_weight.get(dest)  # weghit
+        #
+        # x_squared = (pokemon.pos.x - float(src_nd.pos[0])) * (pokemon.pos.x - float(src_nd.pos[0]))
+        # y_squared = (pokemon.pos.y - float(src_nd.pos[1])) * (pokemon.pos.y - float(src_nd.pos[1]))
+        # # x_squared = (self.my_scale2(pokemon.pos.x, x=True) - self.my_scale2(float(src_nd.pos[0]), x=True)) ** 2
+        # # y_squared = (self.my_scale2(pokemon.pos.y, y=True) - self.my_scale2(float(src_nd.pos[1]), y=True)) ** 2
+        # dist_src2poke = math.sqrt(x_squared + y_squared)  # src to pokemon
+        # time_to_poke = path_time + (dist_src2poke / edge_speed)
+        #
+        # x_squared = (float(dest_nd.pos[0]) - float(src_nd.pos[0])) * (float(dest_nd.pos[0]) - float(src_nd.pos[0]))
+        # y_squared = (float(dest_nd.pos[1]) - float(src_nd.pos[1])) * (float(dest_nd.pos[1]) - float(src_nd.pos[1]))
+        # # x_squared = (self.my_scale2(float(dest_nd.pos[0]), x=True) - self.my_scale2(float(src_nd.pos[0]), x=True)) ** 2
+        # # y_squared = (self.my_scale2(float(dest_nd.pos[1]), y=True) - self.my_scale2(float(src_nd.pos[1]), y=True)) ** 2
+        # dist_src2dest = math.sqrt(x_squared + y_squared)  # src to dest
+        # time_to_fdest = path_time + (dist_src2dest / edge_speed)
+        # # path_
+        # return time_to_poke, path, time_to_fdest
 
     def get_poke_edge(self, pokemon):
         poke_pos = pokemon.pos
@@ -417,7 +525,9 @@ class MyGame:
 
 
 
-
+# def euqlid_distance(p1,p2):
+#
+#     nd
 
 
 if __name__ == '__main__':
