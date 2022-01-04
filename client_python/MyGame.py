@@ -13,6 +13,7 @@ from GraphAlgo import GraphAlgo
 from Pokemon import Pokemon
 from Agent import Agent
 from client_python.Loc_Node_Edge import Location
+import threading
 import networkx as nx
 
 
@@ -31,13 +32,14 @@ class MyGame:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT), depth=32, flags=pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
         pygame.font.init()
+        pygame.display.set_caption("Pokémon Game")
         self.FONT = pygame.font.SysFont('Arial', 20, bold=True)
         self.radius = 15
         self.min_x = math.inf
         self.min_y = math.inf
         self.max_x = -math.inf
         self.max_y = -math.inf
-
+        #self.t1 = threading.Thread(target=self.stop_button())#.start() # for the STOP button
         self.refresh_time = int((1 / 10) / 0.001)
 
     def load(self):
@@ -175,6 +177,16 @@ class MyGame:
         """
         # refresh surface
         self.screen.fill(pygame.Color(0, 0, 0))
+        # texts
+        pygame.font.init()
+        p, m, t = self.get_params()
+        points = self.FONT.render("Points: "+p, False, (248,248,255))
+        moves = self.FONT.render("Moves: "+m, False, (248, 248, 255))
+        time_left = self.FONT.render("Time Left: "+t, False, (248, 248, 255))
+        self.screen.blit(points, (5,0))
+        self.screen.blit(moves, (5, 25))
+        self.screen.blit(time_left, (5, 50))
+
 
         # draw nodes
         for n in self.graph.key_nodes.values():
@@ -215,14 +227,51 @@ class MyGame:
                                10)
         # draw pokemons (note: should differ (GUI wise) between the up and the down pokemons (currently they are marked in the same way).
         for p in self.pokemons:
-            pygame.draw.circle(self.screen, pygame.Color(0, 255, 255),
-                               (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
-
+            if p.type < 0:
+                pygame.draw.circle(self.screen, pygame.Color(0, 255, 255),
+                                 (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
+            else:
+                pygame.draw.circle(self.screen, pygame.Color(122, 61, 23),
+                                   (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
         # update screen changes
         pygame.display.update()
 
         # refresh rate
         # self.clock.tick(self.refresh_time)
+
+    def stop_button(self):
+        stop_btn = pygame.image.load('stop.png').convert_alpha()
+        width = stop_btn.get_width()
+        height = stop_btn.get_height()
+        #stop_btn = pygame.transform.scale(stop_btn, (int(width*self.scale()), int(height*self.scale())))
+        running = True
+        clicked = False
+        stop = False
+        while running:
+            self.screen.blit(stop_btn, (10, 10))  # x,y
+            pos = pygame.mouse.get_pos()
+            if stop_btn.get_rect().collidepoint(pos):
+                if pygame.mouse.get_pressed()[0] == 1 and clicked == False:
+                    clicked = True
+                    stop = True
+                    print("clicked")
+            if pygame.mouse.get_pressed()[0] == 0:
+                clicked = False
+            if stop == True:
+                running = False
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+
+
+    def get_params(self):
+        string = self.client.get_info()
+        string = string[14:len(string) - 1]
+        client_dict = json.loads(string)
+        points, moves = str(client_dict.get("grade")), str(client_dict.get("moves"))
+        time_left = str(int(int(self.client.time_to_end()) / 1000))
+        return points, moves, time_left
 
     def simple_move_agents(self):
         for agent in self.agents:
