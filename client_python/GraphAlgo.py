@@ -13,11 +13,12 @@ from Loc_Node_Edge import Node, Location
 import matplotlib.pyplot as plt
 
 
-class GraphAlgo(GraphAlgoInterface):
+class GraphAlgo():
     """
     this class represent a set of algorithms of graphs. it contains only 1 thing:
     graph - the graph the algorithms will be used on.
     """
+
     def __init__(self, *args) -> None:
         if len(args) == 1:
             self.graph = args[0]
@@ -27,7 +28,7 @@ class GraphAlgo(GraphAlgoInterface):
     def get_graph(self) -> GraphInterface:
         return self.graph
 
-    def shortest_path(self, id1: int, id2: int) -> (float, list):
+    def shortest_path(self, id1: int, id2: int, agent_speed) -> (float, list):
         """
         Returns the shortest path from node id1 to node id2 using Dijkstra's Algorithm.
         this function use Dijkstra's Algorithm with PriorityQueue.
@@ -63,15 +64,15 @@ class GraphAlgo(GraphAlgoInterface):
                     continue
                 curr_time = times.get(curr_dest)
                 x_squared = (float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0])) * (
-                            float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0]))
+                        float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0]))
                 y_squared = (float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1])) * (
-                            float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1]))
+                        float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1]))
                 # x_squared = (self.my_scale2(float(keys.get(curr_dest).pos[0]), x=True) - self.my_scale2(
                 #     float(curr_nd.pos[0]), x=True)) ** 2
                 # y_squared = (self.my_scale2(float(keys.get(curr_dest).pos[1]), y=True) - self.my_scale2(
                 #     float(curr_nd.pos[1]), y=True)) ** 2
                 dist_src2dest = math.sqrt(x_squared + y_squared)
-                tmp_time = dist_src2dest / curr_speed
+                tmp_time = dist_src2dest / (curr_speed + agent_speed)
                 new_time = times.get(curr_key) + tmp_time
                 if new_time < curr_time:
                     times[curr_dest] = new_time
@@ -126,7 +127,7 @@ class GraphAlgo(GraphAlgoInterface):
         full_min_path.insert(0, min_path[0])
         return full_min_path, min_path_dist
 
-    def dijkstra(self, src) -> (tuple, dict, dict):
+    def dijkstra(self, src, agent_speed) -> (tuple, dict, dict):
         """
         this function is an implementation of Dijkstra's Algorithm using PriorityQueue.
         it returns 3 things:
@@ -166,7 +167,7 @@ class GraphAlgo(GraphAlgoInterface):
                 # y_squared = (self.my_scale2(float(keys.get(curr_dest).pos[1]), y=True) - self.my_scale2(
                 #     float(curr_nd.pos[1]), y=True)) ** 2
                 dist_src2dest = math.sqrt(x_squared + y_squared)
-                tmp_time = dist_src2dest / curr_speed
+                tmp_time = dist_src2dest / (curr_speed+agent_speed)
                 new_time = times.get(curr_key) + tmp_time
                 if new_time < curr_time:
                     times[curr_dest] = new_time
@@ -180,7 +181,6 @@ class GraphAlgo(GraphAlgoInterface):
                 max_id = key
         ans = (maximum, src)
         return ans, times, previous
-
 
     # def load_from_json(self, file_name: str) -> bool:
     #     """
@@ -283,7 +283,6 @@ class GraphAlgo(GraphAlgoInterface):
     #         return False
     #     return True
 
-
     # def centerPoint(self) -> (int, float):
     #     """
     #    Finds the node that has the shortest distance to it's farthest node.
@@ -301,8 +300,6 @@ class GraphAlgo(GraphAlgoInterface):
     #     key = max_min[1]
     #     # nd = self.graph.key_nodes.get(key)
     #     return key, max_min_dist
-
-
 
     # def plot_graph(self) -> None:
     #     """
@@ -357,7 +354,7 @@ if __name__ == '__main__':
     print(g.isConnected())
     print(g.centerPoint())
     g.plot_graph()
-    #print(g.shortest_path(0,42))
-    print(g.TSP([0, 5,4,9]))
+    # print(g.shortest_path(0,42))
+    print(g.TSP([0, 5, 4, 9]))
     print("H")
     g.save_to_json("out")
