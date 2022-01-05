@@ -191,6 +191,15 @@ class MyGame:
         self.screen.blit(moves, (5, 25))
         self.screen.blit(time_left, (5, 50))
 
+        # stop button
+        img = pygame.image.load('stop.png').convert_alpha()
+        img2 = pygame.image.load('stop_on.png').convert_alpha()
+        rect = img.get_rect(topleft=(5, 75))
+        pos = pygame.mouse.get_pos()
+        if rect.collidepoint(pos):
+            self.screen.blit(img2, (5, 75))
+        else:
+            self.screen.blit(img, (5, 75))
 
         # draw nodes
         for n in self.graph.key_nodes.values():
@@ -237,37 +246,13 @@ class MyGame:
             else:
                 pygame.draw.circle(self.screen, pygame.Color(67, 89, 65),
                                    (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
+            pokemon_val = self.FONT.render(str(p.value), False, (255, 0, 0))
+            self.screen.blit(pokemon_val, (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))+4))
         # update screen changes
         pygame.display.update()
 
         # refresh rate
         # self.clock.tick(self.refresh_time)
-
-    def stop_button(self):
-        stop_btn = pygame.image.load('stop.png').convert_alpha()
-        width = stop_btn.get_width()
-        height = stop_btn.get_height()
-        #stop_btn = pygame.transform.scale(stop_btn, (int(width*self.scale()), int(height*self.scale())))
-        running = True
-        clicked = False
-        stop = False
-        while running:
-            self.screen.blit(stop_btn, (10, 10))  # x,y
-            pos = pygame.mouse.get_pos()
-            if stop_btn.get_rect().collidepoint(pos):
-                if pygame.mouse.get_pressed()[0] == 1 and clicked == False:
-                    clicked = True
-                    stop = True
-                    print("clicked")
-            if pygame.mouse.get_pressed()[0] == 0:
-                clicked = False
-            if stop == True:
-                running = False
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-
 
     def get_params(self):
         string = self.client.get_info()
@@ -313,6 +298,39 @@ class MyGame:
                         self.allocate_agent_0(pokemon)
             self.complex_move_agents()
             pygame.time.wait(5)
+            # self.clock.tick(10)
+            self.client.move()
+            self.update_gui()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit(0)
+
+
+    def start3(self): # with stop button
+        self.client.start()
+        img = pygame.image.load('stop.png').convert_alpha()
+        rect = img.get_rect(topleft=(5, 75))
+        while self.client.is_running():
+            pos = pygame.mouse.get_pos()
+            #print(pos)
+            if rect.collidepoint(pos):
+                #print("on the stop button")
+                while pygame.mouse.get_pressed()[0] == 1:
+                    print("clicked stop")
+                    pygame.time.wait(250)
+                    pygame.quit()
+                    exit(0)
+            #if pygame.mouse.get_pressed()[0] == 0:
+                #clicked = False
+                #running = False
+            self.load_pokemons()
+            self.load_agents()
+            for pokemon in self.pokemons:
+                if pokemon.agent_aloc == -1:
+                    self.allocate_agent(pokemon)
+            self.complex_move_agents()
+            pygame.time.wait(100)
             # self.clock.tick(10)
             self.client.move()
             self.update_gui()
@@ -643,7 +661,14 @@ class MyGame:
 if __name__ == '__main__':
     mg = MyGame()
     mg.load()
-    mg.start2()
+    mg.start3()
+    #btn.start()
+
+    #t1 = threading.Thread(target=mg.start())
+    #t2 = threading.Thread(target=btn.start())
+    #t1.start()
+    #t2.start()
+
     # mg.client.start()
     # mg.load_pokemons()
     # mg.load_agents()
