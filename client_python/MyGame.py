@@ -8,6 +8,7 @@ from client import Client
 import json
 from pygame import gfxdraw
 import pygame
+from Button import StopButton
 # from pygame import *
 from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
@@ -583,8 +584,17 @@ class MyGame:
 
 if __name__ == '__main__':
     mg = MyGame()
+    img = pygame.image.load('stop.png').convert_alpha()
+    btn = StopButton(5, 150, img, 0.7, mg.screen, mg.client)  # should change the SCALE
     mg.load()
     mg.start2()
+    #btn.start()
+
+    #t1 = threading.Thread(target=mg.start())
+    #t2 = threading.Thread(target=btn.start())
+    #t1.start()
+    #t2.start()
+
     # mg.client.start()
     # mg.load_pokemons()
     # mg.load_agents()
