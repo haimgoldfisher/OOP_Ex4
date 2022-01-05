@@ -145,9 +145,9 @@ class MyGame:
 
     def add_agents(self, num):
         for x in range(num):
-            fnd = self.graph.key_nodes.get(0)
+            fnd = self.graph.key_nodes.get(x)
             loc = Location(float(fnd.pos[0]), float(fnd.pos[1]), float(fnd.pos[2]))
-            agent = Agent(x, 0, 0, -1, 1, loc)
+            agent = Agent(x, 0, x, -1, 1, loc)
             self.client.add_agent("{\"id\":%d}" % x)
             self.agents.append(agent)
 
@@ -232,7 +232,7 @@ class MyGame:
                 pygame.draw.circle(self.screen, pygame.Color(0, 255, 255),
                                  (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
             else:
-                pygame.draw.circle(self.screen, pygame.Color(122, 61, 23),
+                pygame.draw.circle(self.screen, pygame.Color(67, 89, 65),
                                    (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
         # update screen changes
         pygame.display.update()
@@ -372,13 +372,15 @@ class MyGame:
                 agent_key = agent.key
                 chosen_agent = None
                 break
+            done = False
             for index, value in enumerate(agent.path):
                 if value == src and index + 1 < len(agent.path):
                     if agent.path[index + 1] == dest:
                         agent_key = agent.key
                         chosen_agent = None
+                        done = True
                         break
-            if agent_key != -1:
+            if done:
                 break
             curr_time2poke, path, curr_time2fdest = self.calc_time(agent, pokemon)
 
