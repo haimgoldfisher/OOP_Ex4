@@ -236,11 +236,11 @@ class MyGame:
 
         # draw agents
         for agent in self.agents:
-            #pygame.draw.circle(self.screen, pygame.Color(122, 61, 23),(int((self.my_scale(agent.pos.x, x=True))), int((self.my_scale(agent.pos.y, y=True)))),   10)
-            ball = pygame.image.load('pokeball.png')
-            ball = pygame.transform.scale(ball, (40, 40))
+            pygame.draw.circle(self.screen, pygame.Color(122, 61, 23),(int((self.my_scale(agent.pos.x, x=True))), int((self.my_scale(agent.pos.y, y=True)))),   10)
+            #ball = pygame.image.load('pokeball.png')
+            #ball = pygame.transform.scale(ball, (40, 40))
             #ball.set_colorkey((163, 73, 164))
-            self.screen.blit(ball,(int((self.my_scale(agent.pos.x, x=True)))-20, int((self.my_scale(agent.pos.y, y=True)))-20))
+            #self.screen.blit(ball,(int((self.my_scale(agent.pos.x, x=True)))-20, int((self.my_scale(agent.pos.y, y=True)))-20))
         # draw pokemons (note: should differ (GUI wise) between the up and the down pokemons (currently they are marked in the same way).
         for p in self.pokemons:
             if p.type < 0:
