@@ -328,7 +328,10 @@ class MyGame:
             self.load_agents()
             for pokemon in self.pokemons:
                 if pokemon.agent_aloc == -1:
-                    self.allocate_agent(pokemon)
+                    if self.flag == 1:
+                        self.allocate_agent_1(pokemon)
+                    else:
+                        self.allocate_agent_0(pokemon)
             self.complex_move_agents()
             pygame.time.wait(100)
             # self.clock.tick(10)
