@@ -8,29 +8,17 @@
 ---------
 ## 1. Introduction:
 
-1. <ins>**GraphInterface**</ins> - Contains the following functions that we must implement:
-    * `v_size()` - It returns the amount of nodes in this graph.
-    * `e_size()` - It returns the amount of edges in this graph. 
-    * `get_all_v()` - It returns a dictionary of all the key_node + nodes in this graph.
-    * `all_in_edges_of_node(int)` - It returns a dictionary of all the edges which are directed to the selected vertex.
-    * `all_out_edges_of_node(int)` - It returns a dictionary of all the edges coming out of the selected vertex.
-    * `get_mc()` - It returns the number of actions which we did on this graph so far.
-    * `add_node(int, tuple)` - It adds a new node to this graph.
-    * `add_edge(int, int, float)` - It adds a new edge to this graph.
-    * `remove_node(int)` - It removes a node from this graph (If it exists).
-    * `remove_edge(int, int)` - It removes an edge from this graph (If it exists).
-    
-2. <ins>**GraphAlgoInterface**</ins> - Contains the following functions that we must implement:
-    * `get_graph()` - It returns the graph that the algorithm loaded.
-    * `load_from_json(str)` - It loads a new graph from the Json file.
-    * `save_to_json(str)` - It saves the graph that works on it into a Json file.
-    * `shortest_path(int, int)` - It returns the distance and the path (list) of the shortest path between two vertices.
-    *  `TSP(List[int])` - It returns the shortest path that visits all the nodes in the list as a list and the overall distance.
-    *  `centerPoint()` - It return the vertex that has the shortest distance to it's farthest node.
-    *  `plot_graph()` - It plots the graph. 
+We want to design an efficient algorithm for capturing Pokemons on a directed and weighted graph. The algorithm includes the following variables:
+
+1. <ins>**Agent - **</ins> Each agent is defined to be a player in the game. Please note that the agent's behavior does not change by any user. The agent is basically the product of algorithms designed to capture as many Pokemons as possible, in as short a time as possible. That is, we will need to design a smart algorithm so that the agent will always go to the ideal Pokemon or do the ideal route that will maximize the score he will accumulate during it. The fact that the agent has speed must be taken into account. This speed will increase as a result of capturing Pokemons. Also, the agent will have to change his trajectory as a result of a new Pokemon popping up (which is closer to the agent or has a higher score than the existing path).
+2. <ins>**Pokemon - **</ins> The item the agent must collect. Note that Pokemon can only be on edges and not on vertices. Also, Pokemon can be on the edge in one direction. That is, when there is a forward and backward edge between two vertices, the Pokemon will be on one of them. Also, each Pokemon holds a value, a score that as a result of capturing the Pokemon becomes a score in the game. Also, the agent's speed increases when he catches a Pokemon. The higher the value of the Pokemon, the greater the agent's speed.
+3. <ins>**Graph - **</ins> The playground. The agents and Pokemon are on the graph. Women notice that agents can move from vertex to vertex through the edges. In addition, each Pokemon will appear on the edge. When an agent moves from end to end that has a Pokemon on it - he will collect it. As a result the score will be updated accordingly (and so will the agent's speed). Instead of the collected Pokemon, a new Pokemon will appear in a different position on the graph.
+4. <ins>**Client (Server) - **</ins> The server of the game. In general we will not touch on its code but will only get information from it and use it to update the game status. That is, the server defines the game, the time, the amount of agents, the amount of Pokemon, etc. On its basis we will build the algorithms and implement the necessary objects.
 
 ---------
 ## 2. The Thoughts Behind The Classes:
+
+From a simplistic point of view, it is easy to see that this task is a kind of combination of the elevator task (online) and the graph task. The significant differences between an agent and an elevator are that an elevator can go up and down, but an agent can travel from vertex to vertex more freely and with more options. Also, the agent's speed changes while playing. The significant differences between a passenger and a Pokemon are that the Pokemon is captured and disappears, while the passenger has a starting floor and a destination floor. Also, Pokemon holds a value, while in the elevator task each passenger is equal among equals. We would like to use our graph task that will form the basis for the graph and algorithms needed to solve the problem. That is, it should be noted that we will need TSP and shortest path algorithms from that task. Of course we would like to make such and such changes depending on the game (e.g. different Pokemon values). Therefore, for a start, it would be effective to implement a Pokemon class as well as an Agent class. From there we will want to connect the agent action depending on what is going on in the game, as well as depending on the amount of agents participating in the game. This will be the main challenge. Introduce to each agent the way that maximizes the overall benefit of all agents together. In addition, we would like to reflect what is happening in the game through a GUI interface that clearly shows what is happening in the game. We would like to build a class that will get the necessary information from the server, respond accordingly (update the agents path efficiently to that moment), and also update the GUI. We will have to define some threads for this
 
 ---------
 ## 3. UML Diagram:
@@ -109,7 +97,7 @@ This project was done by using Python Interpreter: Python 3.8
 - Directed Graphs : https://en.wikipedia.org/wiki/Directed_graph
 - Connectivity : https://en.wikipedia.org/wiki/Connectivity_(graph_theory)
 - DFS Algorithm : https://en.wikipedia.org/wiki/Depth-first_search
-- Priority Queue : https://en.wikipedia.org/wiki/Priority_queue
+- Shortest Path Problem : https://en.wikipedia.org/wiki/Shortest_path_problem
 - Dijkstra's Algorithm : https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 - TSP : https://en.wikipedia.org/wiki/Travelling_salesman_problem
 - Pygame: https://www.pygame.org/news
