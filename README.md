@@ -50,30 +50,40 @@ As required, we will write two test units. The TestDiGraph unit will test the gr
 ---------
 ## 5. Results:
 
-| **Case**   | **# Nodes** | **# Edges**  |  **Agents**  | **Time** | **Pokemons**  | **Grade**   | **Moves**  |
-|------------|-------------|--------------|--------------|----------|---------------|-------------|------------|
-| 1          |             |              |              |          |               |             |            |
-| 2          |             |              |              |          |               |             |            |
-| 3          |             |              |              |          |               |             |            |
-| 4          |             |              |              |          |               |             |            |
-| 5          |             |              |              |          |               |             |            |
-| 6          |             |              |              |          |               |             |            |
-| 7          |             |              |              |          |               |             |            |
-| 8          |             |              |              |          |               |             |            |
-| 9          |             |              |              |          |               |             |            |
-| 10         |             |              |              |          |               |             |            |
-| 11         |             |              |              |          |               |             |            |
-| 12         |             |              |              |          |               |             |            |
-| 13         |             |              |              |          |               |             |            |
-| 14         |             |              |              |          |               |             |            |
-| 15         |             |              |              |          |               |             |            |
-
+| **Case**   | **Graph**   | **Pokemons** | **Time**   | **Agents**  | **Grade**   | **Moves**  |
+|------------|-------------|--------------|------------|-------------|-------------|------------|
+| 0          | A0          |  1           |  30 sec    |  1          |             |            |
+| 1          | A0          |  2           |  1 min     |  1          |             |            |
+| 2          | A0          |  3           |  30 sec    |  1          |             |            |
+| 3          | A0          |  4           |  1 min     |  1          |             |            |
+| 4          | A1          |  5           |  30 sec    |  1          |             |            |
+| 5          | A1          |  6           |  1 min     |  1          |             |            |
+| 6          | A1          |  1           |  30 sec    |  1          |             |            |
+| 7          | A1          |  2           |  1 min     |  1          |             |            |
+| 8          | A2          |  3           |  30 sec    |  1          |             |            |
+| 9          | A2          |  4           |  1 min     |  1          |             |            |
+| 10         | A2          |  5           |  30 sec    |  1          |             |            |
+| 11         | A2          |  6           |  1 min     |  3          |             |            |
+| 12         | A3          |  1           |  30 sec    |  1          |             |            |
+| 13         | A3          |  2           |  1 min     |  2          |             |            |
+| 14         | A3          |  3           |  30 sec    |  3          |             |            |
+| 15         | A3          |  4           |  1 min     |  1          |             |            |
 
 
 ## A very detailed performence report can be found in our WIKI page: 
 
 ---------
-## 6. How to Download, Run and Use The Project:
+## 6. GUI Interface:
+
+If we look at the graphical interface we will notice that there is an agent represented by a brown dot. The agent moves from vertex to vertex by passing over the edges of the graph. Each vertex contains a number so it ID number can be seen. The edge is represented by a simple line. The graph is filled with two types of Pokemon:
+
+<code><img height="50" width="50" src="https://github.com/haimgoldfisher/OOP_Ex4/blob/master/client_python/pokemon1.jpg?raw=true" title="Pikachu" /></code>
+<code><img height="50" width="50" src="https://github.com/haimgoldfisher/OOP_Ex4/blob/master/client_python/pokemon2.jpg?raw=true" title="Charmander"/></code> 
+
+Next to each Pokemon will appear the score value it holds. The type of Pokemon is determined by the direction of the edge on which it stands. In addition, the top left corner of the screen lists some important things: points the agent has accumulated so far, number of moves made so far and time left until the game is over. Moreover, there is a red button which causes the program to stop. For example:
+
+---------
+## 7. How to Download, Run and Use The Project:
 
 Before Running this project, install the above packages:
 ```
@@ -94,7 +104,7 @@ java -jar Ex4_Server_v0.0.jar [0,15]
 This project was done by using Python Interpreter: Python 3.8
 
 ---------
-## 7. Info & Resources:
+## 8. Info & Resources:
 
 - Directed Graphs : https://en.wikipedia.org/wiki/Directed_graph
 - Connectivity : https://en.wikipedia.org/wiki/Connectivity_(graph_theory)
