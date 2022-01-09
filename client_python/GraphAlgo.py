@@ -59,20 +59,11 @@ class GraphAlgo():
             curr_nd = keys.get(curr_key)
             for edge in curr_nd.child_weight.items():
                 curr_dest = edge[0]
-                curr_speed = edge[1]
+                curr_weghit = edge[1]
                 if visited.get(curr_dest) is not None:
                     continue
                 curr_time = times.get(curr_dest)
-                x_squared = (float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0])) * (
-                        float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0]))
-                y_squared = (float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1])) * (
-                        float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1]))
-                # x_squared = (self.my_scale2(float(keys.get(curr_dest).pos[0]), x=True) - self.my_scale2(
-                #     float(curr_nd.pos[0]), x=True)) ** 2
-                # y_squared = (self.my_scale2(float(keys.get(curr_dest).pos[1]), y=True) - self.my_scale2(
-                #     float(curr_nd.pos[1]), y=True)) ** 2
-                dist_src2dest = math.sqrt(x_squared + y_squared)
-                tmp_time = dist_src2dest / (curr_speed + agent_speed)
+                tmp_time = (curr_weghit / agent_speed)
                 new_time = times.get(curr_key) + tmp_time
                 if new_time < curr_time:
                     times[curr_dest] = new_time
@@ -154,20 +145,11 @@ class GraphAlgo():
             curr_nd = keys.get(curr_key)
             for edge in curr_nd.child_weight.items():
                 curr_dest = edge[0]
-                curr_speed = edge[1]
+                curr_weghit = edge[1]
                 if visited.get(curr_dest) is not None:
                     continue
                 curr_time = times.get(curr_dest)
-                x_squared = (float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0])) * (
-                        float(keys.get(curr_dest).pos[0]) - float(curr_nd.pos[0]))
-                y_squared = (float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1])) * (
-                        float(keys.get(curr_dest).pos[1]) - float(curr_nd.pos[1]))
-                # x_squared = (self.my_scale2(float(keys.get(curr_dest).pos[0]), x=True) - self.my_scale2(
-                #     float(curr_nd.pos[0]), x=True)) ** 2
-                # y_squared = (self.my_scale2(float(keys.get(curr_dest).pos[1]), y=True) - self.my_scale2(
-                #     float(curr_nd.pos[1]), y=True)) ** 2
-                dist_src2dest = math.sqrt(x_squared + y_squared)
-                tmp_time = dist_src2dest / (curr_speed+agent_speed)
+                tmp_time = (curr_weghit / agent_speed)
                 new_time = times.get(curr_key) + tmp_time
                 if new_time < curr_time:
                     times[curr_dest] = new_time

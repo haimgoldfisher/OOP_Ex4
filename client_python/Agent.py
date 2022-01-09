@@ -8,13 +8,20 @@ class Agent:
         self.speed = speed
         self.pos = loc
         self.path = []
-        self.time2poke = 0
-        self.time2curr_dest = 0
-        self.time2final_dest = 0
+
         self.curr_node = dest
         if dest == -1:
             self.curr_node = src
         self.pokemons = []
+        self.time2pokes = []
+        self.time2final_dests = []
+        self.time2curr_dest = 0
+
+        # self.dests_lst = []
+        # self.time2poke = 0
+        # self.time2final_dest = 0
+        # self.caught_pokemon = False
+
 
     def __eq__(self, other):
         # ans = True
