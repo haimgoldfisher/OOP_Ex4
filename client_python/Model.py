@@ -8,20 +8,34 @@ from client_python.GraphAlgo import GraphAlgo
 
 
 class Model:
+    """
+    this class dealing with the algorithmic side of this project, its mainly calculates which agent to allocate to
+    a new pokemon and the path the agent should do. its have the following fields:
+    graph - the graph of the game
+    graph_algo - a set of algorithms can be made on the graph.
+    """
 
     def __init__(self):
         # self.pokemons = []
         # self.agents = []
         self.graph = DiGraph()
         self.graph_algo = GraphAlgo(self.graph)
-        self.flag = 0
+        # self.flag = 0
 
     def first_update(self, agents, pokemons, graph_algo, flag):
+        """
+        this function initialize the graph and the graph algo fields of the model and call the update function
+        for the first time.
+        """
         self.graph_algo = graph_algo
         self.graph = graph_algo.graph
         self.update(agents, pokemons, flag)
 
     def update(self, agents, pokemons, flag):
+        """
+        this function go over pokemons list that are currently on the graph and checks for each pokemon if there is
+        an agent that is allocated to him if not it will call to one of the allocation functions depends in the flag.
+        """
         for pokemon in pokemons:
             if pokemon.agent_aloc == -1:
                 if flag == 0:
@@ -30,6 +44,11 @@ class Model:
                     self.allocate_agent_1(agents, pokemon)
 
     def allocate_agent_0(self, agents, pokemon):
+        """
+        this function go over the agents list it receives and calculate for each one of them the shortest path to
+        the given pokemon considering their current path.
+        if a pokemon is already on a path of an agent then he will be allocated to this agent.
+        """
         min_time2poke = math.inf
         time2fdest = 0
         min_path = []
@@ -97,6 +116,10 @@ class Model:
 
 
     def bet_ag_dest(self, agent, pokemon, src, dest):
+        """
+        this function check if pokemon is on the same edge as the agent and if he is in the same direction of the
+        agent
+        """
         if agent.dest != dest or agent.src != src:
             return False
         agent_pos = agent.pos
@@ -121,7 +144,10 @@ class Model:
         return False
 
     def calc_time_on_path(self, agent, pokemon, src, dest):
-        curr_dest = agent.curr_node  ################ maybe a problem
+        """
+        this function calculates the time to a new pokemon that lays on the curr path of the agent.
+        """
+        curr_dest = agent.curr_node
         path_time, path = self.graph_algo.shortest_path(curr_dest, src, agent.speed)
         path.append(dest)
         # path_time += agent.time2final_dest
@@ -147,6 +173,9 @@ class Model:
         return time_to_poke, time_to_fdest
 
     def calc_time_same_edge(self, agent, pokemon, src, dest):
+        """
+        this function calculates the time to a new pokemon that lays on the same edge as the agent.
+        """
         src_nd = self.graph.key_nodes.get(src)
         dest_nd = self.graph.key_nodes.get(dest)
         edge_speed = src_nd.child_weight.get(agent.dest)
@@ -165,8 +194,11 @@ class Model:
 
 
     def calc_time(self, agent, pokemon):
+        """
+        this function calculates the time from the end of the current path of an agent to the given pokemon.
+        """
         src, dest = self.get_poke_edge(pokemon)
-        curr_dest = agent.curr_node  ################ maybe a problem
+        curr_dest = agent.curr_node
         if len(agent.path) > 0:
             curr_dest = agent.path[len(agent.path) - 1]
         path_time, path = self.graph_algo.shortest_path(curr_dest, src, agent.speed)
@@ -197,6 +229,10 @@ class Model:
         return time_to_poke, path, time_to_fdest,val
 
     def calc_time_rev(self, agent, pokemon):
+        """
+        this function calculates the time to the new pokemon and then to the rest of the path of the agent.
+        it returns an agent object.
+        """
         tmp_agent = Agent(-1, agent.value, agent.src, agent.dest, agent.speed, agent.pos)
         # tmp_agent.time2final_dests.append(agent.time2final_dests[0])
         curr_time2poke, path, curr_time2fdest, curr_val = self.calc_time(tmp_agent, pokemon)
@@ -217,6 +253,10 @@ class Model:
         return tmp_agent
 
     def allocate_agent_1(self, agents, pokemon):
+        """
+        this function go over the agents list it receives and calculate for each one of them the shortest path to
+        the given pokemon considering their current path.
+        """
         min_time2poke = math.inf
         time2fdest = 0
         min_path = []
@@ -299,6 +339,9 @@ class Model:
         return agent_key
 
     def get_poke_edge(self, pokemon):
+        """
+        this function gets a pokemon and calculate on which edge he is laying on.
+        """
         poke_pos = pokemon.pos
         for nd in self.graph.key_nodes.values():
             for child in nd.child_weight.keys():

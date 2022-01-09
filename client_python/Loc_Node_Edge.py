@@ -55,13 +55,13 @@ class Node(object):
         return self.__str__()
 
 
-if __name__ == '__main__':
-    nd = Node(0, None)
-    nd1 = Node(1, None)
-    nd2 = Node(2, None)
-    nd3 = Node(3, None)
-    nd4 = Node(4, None)
-    nd5 = Node(5, None)
-    nd6 = Node(6, None)
-    print(nd)
-    print(nd1)
+# if __name__ == '__main__':
+#     nd = Node(0, None)
+#     nd1 = Node(1, None)
+#     nd2 = Node(2, None)
+#     nd3 = Node(3, None)
+#     nd4 = Node(4, None)
+#     nd5 = Node(5, None)
+#     nd6 = Node(6, None)
+#     print(nd)
+#     print(nd1)

@@ -1,4 +1,18 @@
 class Agent:
+    """
+    this class represent an agent in the game, it contains the following fields:
+    key - the id of this agent
+    value - the total value of all the pokemons this agent caught
+    src - the key of the source node this agent went out of.
+    dest - the kry of the destination node of this agent.
+    speed - the speed of this agent.
+    pos - Location object represent the location of the agent
+    curr_node - if the agent is not moving it will show the "src" value otherwise it will show the "dest" value
+    pokemons - a list contains all the pokemons this agent is going to catch
+    time2pokes - a list contains all arrival time to the pokemons this agent is going to catch
+    time2final_dests - a list contains all arrival time to the first destinations nodes after the pokemons.
+    time2curr_dest - a float that shows the arrival time to the closest node
+    """
 
     def __init__(self, k, v, src, dest, speed, loc):
         self.key = k
@@ -17,28 +31,7 @@ class Agent:
         self.time2final_dests = []
         self.time2curr_dest = 0
 
-        # self.dests_lst = []
-        # self.time2poke = 0
-        # self.time2final_dest = 0
-        # self.caught_pokemon = False
-
-
     def __eq__(self, other):
-        # ans = True
         if self.key != other.key:
             return False
-        # if self.value != other.value:
-        #     return False
-        # if self.src != other.src:
-        #     return False
-        # if self.dest != other.dest:
-        #     return False
-        # if self.speed != other.speed:
-        #     return False
-        # if self.pos != other.pos:
-        #     return False
-        # if self.path != other.path:
-        #     return False
-        # if self.time2dest != other.time2dest:
-        #     return False
         return True
