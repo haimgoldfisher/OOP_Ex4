@@ -65,6 +65,10 @@ As required, we will write test units for each logic function. The first two tes
 ---------
 ## 6. GUI Interface:
 
+ <p align="center">
+<img align="center" src="https://github.com/haimgoldfisher/OOP_Ex4/blob/master/game_video/game_gif.gif?raw=true" height=500 weight=1000/>
+</p>
+
 If we look at the graphical interface we will notice that there is an agent represented by a brown dot. The agent moves from vertex to vertex by passing over the edges of the graph. Each vertex contains a number so it ID number can be seen. The edge is represented by a simple line. The graph is filled with two types of Pokemon:
 
 <code><img height="50" width="50" src="https://github.com/haimgoldfisher/OOP_Ex4/blob/master/client_python/pokemon1.jpg?raw=true" title="Pikachu" /></code>
@@ -75,6 +79,8 @@ Next to each Pokemon will appear the score value it holds. The type of Pokemon i
  <p align="center">
 <img align="center" src="https://github.com/haimgoldfisher/OOP_Ex4/blob/master/client_python/screen_shot.PNG?raw=true" height=500 weight=1000/>
 </p>
+
+## Link to a better quality video of the graphical interface on YouTube: https://www.youtube.com/watch?v=v6mJB2sEmvg
 
 ---------
 ## 7. How to Download, Run and Use The Project:
