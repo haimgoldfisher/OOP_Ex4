@@ -57,5 +57,19 @@ GraphAlgoInterface ..|> GraphAlgo
 GraphInterface ..|> DiGraph
 DiGraph --|> GraphAlgo
 
+Loc_Node_Edge --|> Pokemon
+Loc_Node_Edge --|> Agent
+
+Pokemon --> Agent
+Agent --> Pokemon
+
+Loc_Node_Edge --|> MyGame
+DiGraph --|> MyGame
+GraphAlgo --|> MyGame
+Pokemon --|> MyGame
+client --|> MyGame
+Agent --|> MyGame
+
+
 @enduml
 @enduml
