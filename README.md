@@ -10,10 +10,10 @@
 
 We want to design an efficient algorithm for capturing Pokemons on a directed and weighted graph. The algorithm includes the following variables:
 
-1. <ins>**Agent - **</ins> Each agent is defined to be a player in the game. Please note that the agent's behavior does not change by any user. The agent is basically the product of algorithms designed to capture as many Pokemons as possible, in as short a time as possible. That is, we will need to design a smart algorithm so that the agent will always go to the ideal Pokemon or do the ideal route that will maximize the score he will accumulate during it. The fact that the agent has speed must be taken into account. This speed will increase as a result of capturing Pokemons. Also, the agent will have to change his trajectory as a result of a new Pokemon popping up (which is closer to the agent or has a higher score than the existing path).
-2. <ins>**Pokemon - **</ins> The item the agent must collect. Note that Pokemon can only be on edges and not on vertices. Also, Pokemon can be on the edge in one direction. That is, when there is a forward and backward edge between two vertices, the Pokemon will be on one of them. Also, each Pokemon holds a value, a score that as a result of capturing the Pokemon becomes a score in the game. Also, the agent's speed increases when he catches a Pokemon. The higher the value of the Pokemon, the greater the agent's speed.
-3. <ins>**Graph - **</ins> The playground. The agents and Pokemon are on the graph. Women notice that agents can move from vertex to vertex through the edges. In addition, each Pokemon will appear on the edge. When an agent moves from end to end that has a Pokemon on it - he will collect it. As a result the score will be updated accordingly (and so will the agent's speed). Instead of the collected Pokemon, a new Pokemon will appear in a different position on the graph.
-4. <ins>**Client (Server) - **</ins> The server of the game. In general we will not touch on its code but will only get information from it and use it to update the game status. That is, the server defines the game, the time, the amount of agents, the amount of Pokemon, etc. On its basis we will build the algorithms and implement the necessary objects.
+1. <ins>Agent - </ins> Each agent is defined to be a player in the game. Please note that the agent's behavior does not change by any user. The agent is basically the product of algorithms designed to capture as many Pokemons as possible, in as short a time as possible. That is, we will need to design a smart algorithm so that the agent will always go to the ideal Pokemon or do the ideal route that will maximize the score he will accumulate during it. The fact that the agent has speed must be taken into account. This speed will increase as a result of capturing Pokemons. Also, the agent will have to change his trajectory as a result of a new Pokemon popping up (which is closer to the agent or has a higher score than the existing path).
+2. <ins>Pokemon - </ins> The item the agent must collect. Note that Pokemon can only be on edges and not on vertices. Also, Pokemon can be on the edge in one direction. That is, when there is a forward and backward edge between two vertices, the Pokemon will be on one of them. Also, each Pokemon holds a value, a score that as a result of capturing the Pokemon becomes a score in the game. Also, the agent's speed increases when he catches a Pokemon. The higher the value of the Pokemon, the greater the agent's speed.
+3. <ins>Graph - </ins> The playground. The agents and Pokemon are on the graph. Women notice that agents can move from vertex to vertex through the edges. In addition, each Pokemon will appear on the edge. When an agent moves from end to end that has a Pokemon on it - he will collect it. As a result the score will be updated accordingly (and so will the agent's speed). Instead of the collected Pokemon, a new Pokemon will appear in a different position on the graph.
+4. <ins>Client (Server) - </ins> The server of the game. In general we will not touch on its code but will only get information from it and use it to update the game status. That is, the server defines the game, the time, the amount of agents, the amount of Pokemon, etc. On its basis we will build the algorithms and implement the necessary objects.
 
 ---------
 ## 2. The Thoughts Behind The Classes:
@@ -30,10 +30,12 @@ From a simplistic point of view, it is easy to see that this task is a kind of c
 </p>
   
   
+## A detailed explanation of the code structure, classes and algorithms can be found in our WIKI page: 
+  
 ---------
 ## 4. Testing Class:
 
-As required, we will write two test units. The TestDiGraph unit will test the graph methods including location, nodes, edges and MC. Graphs will be built, we will add and remove edges and vertices and then we will ensure that the class works properly. Of course we would like to see that after each operation, the MC value increases as expected. The TestGraphAlgo unit will be performed, but most of the work in it is outside the computer. That is, since we want to verify that the output is correct, we will need to verify this using the algorithmic tools at our disposal. We will check that the desired output is obtained for each of the algorithms. In addition, we would like to see that the auxiliary functions (reverse, isConnected...) are correct as required.
+As required, we will write test units for each logic function. The first two test classes were taken from the previous task because they test the same functions. The TestDiGraph unit will test the graph methods including location, nodes, edges and MC. Graphs will be built, we will add and remove edges and vertices and then we will ensure that the class works properly. Of course we would like to see that after each operation, the MC value increases as expected. The TestGraphAlgo unit will be performed, but most of the work in it is outside the computer. That is, since we want to verify that the output is correct, we will need to verify this using the algorithmic tools at our disposal. We will check that the desired output is obtained for each of the algorithms. In addition, we would like to see that the auxiliary functions are correct as required. In addition, we would like to check that the agent's time calculations from Pokemon are indeed correct. To do this we will set up a test unit called TestPokemon. It is important to remember that there are many functions that can be tested just by activating the server. Therefore they are not suitable to unit tests. In addition, when it comes to testing the efficiency of our algorithms, this is done by looking at the GUI interface and checking whether the agent is doing the most correct action for that given moment. In addition, the most effective tool we have is the comparison tool. That is, we run our interface and check if the given grade is good compared to the other scores that go up to Google Sheets. This is basically something that can not really be done in a practical way in a standard testing class. It's important to mention that the purpose of the visual interface (GUI) is precisely for the purpose of testing. That is, we do not really need the interface except for ornamental purposes and also for self-examination of what the agent is actually doing.
 
 ---------
 ## 5. Results:
@@ -68,7 +70,11 @@ If we look at the graphical interface we will notice that there is an agent repr
 <code><img height="50" width="50" src="https://github.com/haimgoldfisher/OOP_Ex4/blob/master/client_python/pokemon1.jpg?raw=true" title="Pikachu" /></code>
 <code><img height="50" width="50" src="https://github.com/haimgoldfisher/OOP_Ex4/blob/master/client_python/pokemon2.jpg?raw=true" title="Charmander"/></code> 
 
-Next to each Pokemon will appear the score value it holds. The type of Pokemon is determined by the direction of the edge on which it stands. In addition, the top left corner of the screen lists some important things: points the agent has accumulated so far, number of moves made so far and time left until the game is over. Moreover, there is a red button which causes the program to stop. For example:
+Next to each Pokemon will appear the score value it holds. The type of Pokemon is determined by the direction of the edge on which it stands. In addition, the top left corner of the screen lists some important things: points the agent has accumulated so far, number of moves made so far and time left until the game is over. Moreover, there is a red button which causes the program to stop. For example: 
+
+ <p align="center">
+<img align="center" src="https://github.com/haimgoldfisher/OOP_Ex4/blob/master/client_python/screen_shot.PNG?raw=true" height=500 weight=1000/>
+</p>
 
 ---------
 ## 7. How to Download, Run and Use The Project:
@@ -83,13 +89,13 @@ Download the whole project and export it by the above actions:
 Click Code (Green Button) -> Click Download ZIP -> Choose Extract to Folder in Zip -> Run: Main.py
 ```
 
-Run the Server from cmd, choose one of the 16 cases ([0,15]):
+Run the Server from cmd in the folder which contains 'Ex4_Server_v0.0.jar', choose one of the 16 cases ([0,15]):
 ```
 java -jar Ex4_Server_v0.0.jar [0,15]
 ```
 ---------
 
-This project was done by using Python Interpreter: Python 3.8
+This project was done by using Python Interpreter: Python 3.9
 
 ---------
 ## 8. Info & Resources:
