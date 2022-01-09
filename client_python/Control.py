@@ -36,13 +36,18 @@ class Control:
         self.load_pokemons()
         # self.load_agents()
         self.load_graph()
-        self.load_info()
         self.graph_algo = GraphAlgo(self.graph)
+        self.model.graph = self.graph
+        self.model.graph_algo = self.graph_algo
+        self.load_info()
+        self.load_agents()
         # self.client.get_info()
 
         p, m, t = self.get_params()
         self.gui.first_update(self.agents, self.pokemons, self.graph, p, m, t)
-        self.model.first_update(self.agents, self.pokemons, self.graph_algo)
+        self.model.first_update(self.agents, self.pokemons, self.graph_algo, self.flag)
+
+
 
     # def update(self):
     #     """
@@ -139,12 +144,36 @@ class Control:
             self.flag = 1
 
     def add_agents(self, num):
-        for x in range(num):
-            fnd = self.graph.key_nodes.get(x)
-            loc = Location(float(fnd.pos[0]), float(fnd.pos[1]), float(fnd.pos[2]))
-            agent = Agent(x, 0, x, -1, 1, loc)
-            self.client.add_agent("{\"id\":%d}" % x)
-            self.agents.append(agent)
+        if num == 1:
+            pokes_lst = copy.copy(self.pokemons)
+            while num > 0 and len(pokes_lst) > 0:
+                poke, max_value = -1, -math.inf
+                for pokemon in pokes_lst:
+                    if pokemon.value > max_value:
+                        max_value = pokemon.value
+                        poke = pokemon
+                pokes_lst.remove(poke)
+                src, dest = self.model.get_poke_edge(poke)
+                fnd = self.graph.key_nodes.get(src)
+                loc = Location(float(fnd.pos[0]), float(fnd.pos[1]), float(fnd.pos[2]))
+                agent = Agent(num-1, 0, src, -1, 1, loc)
+                booly = self.client.add_agent("{\"id\":%d}" % src)
+                # self.agents.append(agent)
+                num -= 1
+            while num > 0:
+                fnd = self.graph.key_nodes.get(num)
+                loc = Location(float(fnd.pos[0]), float(fnd.pos[1]), float(fnd.pos[2]))
+                agent = Agent(num-1, 0, num-1, -1, 1, loc)
+                self.client.add_agent("{\"id\":%d}" % num-1)
+                # self.agents.append(agent)
+                num -= 1
+        else:
+            for x in range(num):
+                fnd = self.graph.key_nodes.get(x)
+                loc = Location(float(fnd.pos[0]), float(fnd.pos[1]), float(fnd.pos[2]))
+                agent = Agent(x, 0, x, -1, 1, loc)
+                self.client.add_agent("{\"id\":%d}" % x)
+                self.agents.append(agent)
 
     def get_params(self):
         string = self.client.get_info()
@@ -202,15 +231,17 @@ class Control:
 
     def start_reg(self):
         self.client.start()
+        
         while self.client.is_running():
             self.load_pokemons()
             self.load_agents()
-            self.model.update(self.agents, self.pokemons)
+            self.model.update(self.agents, self.pokemons, self.flag)
             p, m, t = self.get_params()
             self.gui.update(self.agents, self.pokemons, p, m, t)
             self.complex_move_agents()
             time.sleep(self.refresh_time)
             self.client.move()
+
         # while self.client.is_running():
         #     self.load_pokemons()
         #     self.load_agents()
@@ -308,7 +339,7 @@ class Control:
             min_measure = min(lst)
             min_time2dest = min(min_time2dest, min_measure)
         print()
-        if min_time2dest <= 0:
+        if min_time2dest<=0:
             min_time2dest = 0.100
         for agent in self.agents:
             for i in range(len(agent.time2pokes)):

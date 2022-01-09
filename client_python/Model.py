@@ -16,15 +16,18 @@ class Model:
         self.graph_algo = GraphAlgo(self.graph)
         self.flag = 0
 
-    def first_update(self, agents, pokemons, graph_algo):
+    def first_update(self, agents, pokemons, graph_algo, flag):
         self.graph_algo = graph_algo
         self.graph = graph_algo.graph
-        # self.update(agents, pokemons)
+        self.update(agents, pokemons, flag)
 
-    def update(self, agents, pokemons):
+    def update(self, agents, pokemons, flag):
         for pokemon in pokemons:
             if pokemon.agent_aloc == -1:
-                self.allocate_agent_0___3(agents, pokemon)
+                if flag == 0:
+                    self.allocate_agent_0(agents, pokemon)
+                else:
+                    self.allocate_agent_1(agents, pokemon)
 
     def allocate_agent_0(self, agents, pokemon):
         min_time2poke = math.inf
@@ -92,54 +95,6 @@ class Model:
         pokemon.agent_aloc = agent_key
         return agent_key
 
-    def allocate_agent_1(self, pokemon):
-        min_time2poke = math.inf
-        time2fdest = 0
-        min_path = []
-        chosen_agent = None
-        agent_key = -1
-        calc_flag = 0
-        for agent in self.agents:
-            src, dest = self.get_poke_edge(pokemon)
-            if self.bet_ag_dest(agent, pokemon, src, dest):
-                agent_key = agent.key
-                chosen_agent = None
-                break
-            done = False
-            for index, value in enumerate(agent.path):
-                if value == src and index + 1 < len(agent.path):
-                    if agent.path[index + 1] == dest:
-                        agent_key = agent.key
-                        chosen_agent = None
-                        done = True
-                        break
-            if done:
-                break
-            if len(agent.pokemons) + 1 > 1:
-                curr_time2poke, path, curr_time2fdest = self.calc_time_tsp(agent, pokemon)
-                flag = 1
-            else:
-                curr_time2poke, path, curr_time2fdest = self.calc_time(agent, pokemon)
-                flag = 0
-            if curr_time2poke < min_time2poke:
-                min_time2poke = curr_time2poke
-                min_path = copy.copy(path)
-                time2fdest = curr_time2fdest
-                agent_key = agent.key
-                chosen_agent = agent
-                calc_flag = flag
-
-        if chosen_agent is not None:
-            chosen_agent.time2poke = min_time2poke
-            chosen_agent.time2final_dest = time2fdest
-            if calc_flag == 1:
-                chosen_agent.path = min_path
-                chosen_agent.pokemons = [pokemon]
-            if calc_flag == 0:
-                chosen_agent.path += min_path
-                chosen_agent.pokemons.append(pokemon)
-        pokemon.agent_aloc = agent_key
-        return agent_key
 
     def bet_ag_dest(self, agent, pokemon, src, dest):
         if agent.dest != dest or agent.src != src:
@@ -243,10 +198,10 @@ class Model:
 
     def calc_time_rev(self, agent, pokemon):
         tmp_agent = Agent(-1, agent.value, agent.src, agent.dest, agent.speed, agent.pos)
-        tmp_agent.time2final_dests.append(agent.time2final_dests[0])
+        # tmp_agent.time2final_dests.append(agent.time2final_dests[0])
         curr_time2poke, path, curr_time2fdest, curr_val = self.calc_time(tmp_agent, pokemon)
-        # curr_time2poke += agent.time2curr_dest
-        # curr_time2fdest += agent.time2curr_dest
+        curr_time2poke += agent.time2curr_dest
+        curr_time2fdest += agent.time2curr_dest
         tmp_agent.time2pokes.append(curr_time2poke)
         tmp_agent.time2final_dests.append(curr_time2fdest)
         tmp_agent.path += path
@@ -261,7 +216,7 @@ class Model:
             # tmp_agent.dests_lst.append((path[len(path) - 2], path[len(path) - 1]))
         return tmp_agent
 
-    def allocate_agent_0___3(self, agents, pokemon):
+    def allocate_agent_1(self, agents, pokemon):
         min_time2poke = math.inf
         time2fdest = 0
         min_path = []
@@ -343,7 +298,77 @@ class Model:
         pokemon.agent_aloc = agent_key
         return agent_key
 
+    def get_poke_edge(self, pokemon):
+        poke_pos = pokemon.pos
+        for nd in self.graph.key_nodes.values():
+            for child in nd.child_weight.keys():
+                ch_nd = self.graph.key_nodes.get(child)
+                src = nd.pos
+                dest = ch_nd.pos
+                x1 = float(src[0])
+                y1 = float(src[1])
+                x2 = float(dest[0])
+                y2 = float(dest[1])
+                m = (y1 - y2) / (x1 - x2)
+                n = y1 - m * x1
+                a = poke_pos.x * m + n
+                eps = 0.000000000001
+                if a - eps < poke_pos.y < a + eps:
+                    if x1 < poke_pos.x < x2 or x1 > poke_pos.x > x2:
+                        if y1 < poke_pos.y < y2 or y1 > poke_pos.y > y2:
+                            if pokemon.type > 0 and nd.key < ch_nd.key:
+                                return nd.key, ch_nd.key
+                            if pokemon.type < 0 and nd.key > ch_nd.key:
+                                return nd.key, ch_nd.key
 
+    # def allocate_agent_1(self, pokemon):
+    #     min_time2poke = math.inf
+    #     time2fdest = 0
+    #     min_path = []
+    #     chosen_agent = None
+    #     agent_key = -1
+    #     calc_flag = 0
+    #     for agent in self.agents:
+    #         src, dest = self.get_poke_edge(pokemon)
+    #         if self.bet_ag_dest(agent, pokemon, src, dest):
+    #             agent_key = agent.key
+    #             chosen_agent = None
+    #             break
+    #         done = False
+    #         for index, value in enumerate(agent.path):
+    #             if value == src and index + 1 < len(agent.path):
+    #                 if agent.path[index + 1] == dest:
+    #                     agent_key = agent.key
+    #                     chosen_agent = None
+    #                     done = True
+    #                     break
+    #         if done:
+    #             break
+    #         if len(agent.pokemons) + 1 > 1:
+    #             curr_time2poke, path, curr_time2fdest = self.calc_time_tsp(agent, pokemon)
+    #             flag = 1
+    #         else:
+    #             curr_time2poke, path, curr_time2fdest = self.calc_time(agent, pokemon)
+    #             flag = 0
+    #         if curr_time2poke < min_time2poke:
+    #             min_time2poke = curr_time2poke
+    #             min_path = copy.copy(path)
+    #             time2fdest = curr_time2fdest
+    #             agent_key = agent.key
+    #             chosen_agent = agent
+    #             calc_flag = flag
+    #
+    #     if chosen_agent is not None:
+    #         chosen_agent.time2poke = min_time2poke
+    #         chosen_agent.time2final_dest = time2fdest
+    #         if calc_flag == 1:
+    #             chosen_agent.path = min_path
+    #             chosen_agent.pokemons = [pokemon]
+    #         if calc_flag == 0:
+    #             chosen_agent.path += min_path
+    #             chosen_agent.pokemons.append(pokemon)
+    #     pokemon.agent_aloc = agent_key
+    #     return agent_key
 
     # def calc_time_tsp_new(self, agent, new_pokemon):
     #     total_time2poke1, total_path1, total_path_time1, val1 = self.calc_time(agent,new_pokemon)
@@ -653,25 +678,3 @@ class Model:
     #
     #     return min_time2last_poke, full_min_path, min_time2all
 
-    def get_poke_edge(self, pokemon):
-        poke_pos = pokemon.pos
-        for nd in self.graph.key_nodes.values():
-            for child in nd.child_weight.keys():
-                ch_nd = self.graph.key_nodes.get(child)
-                src = nd.pos
-                dest = ch_nd.pos
-                x1 = float(src[0])
-                y1 = float(src[1])
-                x2 = float(dest[0])
-                y2 = float(dest[1])
-                m = (y1 - y2) / (x1 - x2)
-                n = y1 - m * x1
-                a = poke_pos.x * m + n
-                eps = 0.000000000001
-                if a - eps < poke_pos.y < a + eps:
-                    if x1 < poke_pos.x < x2 or x1 > poke_pos.x > x2:
-                        if y1 < poke_pos.y < y2 or y1 > poke_pos.y > y2:
-                            if pokemon.type > 0 and nd.key < ch_nd.key:
-                                return nd.key, ch_nd.key
-                            if pokemon.type < 0 and nd.key > ch_nd.key:
-                                return nd.key, ch_nd.key
