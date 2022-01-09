@@ -1,10 +1,8 @@
 from pygame import gfxdraw
 import pygame
 import math
-
 from client_python.DiGraph import DiGraph
-import Pokemon
-import Agent
+
 
 
 def scale(data, min_screen, max_screen, min_data, max_data):
@@ -18,8 +16,6 @@ def scale(data, min_screen, max_screen, min_data, max_data):
 class GUI:
     def __init__(self):
         self.graph = DiGraph()
-        # self.pokemons = []
-        # self.agents = []
 
         pygame.init()
         WIDTH, HEIGHT = 1080, 720
