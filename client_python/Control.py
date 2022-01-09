@@ -4,6 +4,8 @@ import math
 import threading
 import time
 
+import pygame
+
 from GUI import GUI
 from Model import Model
 from DiGraph import DiGraph
@@ -229,9 +231,27 @@ class Control:
             # self.load_agents()
             self.gui.update(self.agents, self.pokemons)
 
-    def start_reg(self):
-        self.client.start()
-        
+    def button_control(self):
+        img = pygame.image.load('stop.png').convert_alpha()
+        img2 = pygame.image.load('stop_on.png').convert_alpha()
+        rect = img.get_rect(topleft=(5, 75))
+        while 1==1: #self.client.is_running():
+           # pos = self.gui.pygame.mouse.get_pos()
+            pos = pygame.mouse.get_pos()
+            #print(pos)
+            if rect.collidepoint(pos):
+                print("on the stop button")
+                self.gui.screen.blit(img2, (5, 75))
+                if pygame.mouse.get_pressed()[0] == 1:
+                    print("clicked stop")
+                    pygame.time.wait(250)
+                    pygame.quit()
+                    self.client.stop_connection()
+                    exit(0)
+            else:
+                self.gui.screen.blit(img, (5, 75))
+
+    def start_control(self):
         while self.client.is_running():
             self.load_pokemons()
             self.load_agents()
@@ -242,6 +262,32 @@ class Control:
             time.sleep(self.refresh_time)
             self.client.move()
 
+    def start_reg(self):
+        self.client.start()
+        thread1 = threading.Thread(target=self.start_control)
+        thread2 = threading.Thread(target=self.button_control)
+        thread1.start()
+        #thread2.start()
+
+        # img = pygame.image.load('stop.png').convert_alpha()
+        # rect = img.get_rect(topleft=(5, 75))
+        # while self.client.is_running():
+        #     # pos = pygame.mouse.get_pos()
+        #     # if rect.collidepoint(pos):
+        #     #     while pygame.mouse.get_pressed()[0] == 1:
+        #     #         print("clicked stop")
+        #     #         pygame.time.wait(250)
+        #     #         pygame.quit()
+        #     #         self.client.stop_connection()
+        #     #         exit(0)
+        #     self.load_pokemons()
+        #     self.load_agents()
+        #     self.model.update(self.agents, self.pokemons, self.flag)
+        #     p, m, t = self.get_params()
+        #     self.gui.update(self.agents, self.pokemons, p, m, t)
+        #     self.complex_move_agents()
+        #     time.sleep(self.refresh_time)
+        #     self.client.move()
         # while self.client.is_running():
         #     self.load_pokemons()
         #     self.load_agents()

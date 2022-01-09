@@ -7,7 +7,6 @@ from typing import List
 import json
 from matplotlib import patheffects
 import GraphInterface
-from GraphAlgoInterface import GraphAlgoInterface
 from DiGraph import DiGraph
 from Loc_Node_Edge import Node, Location
 import matplotlib.pyplot as plt
