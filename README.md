@@ -30,7 +30,7 @@ From a simplistic point of view, it is easy to see that this task is a kind of c
 </p>
   
   
-## A detailed explanation of the code structure, classes and algorithms can be found in our WIKI page: 
+## A detailed explanation of the code structure, classes and algorithms can be found in our WIKI page: [Code Structure and Classes](https://github.com/haimgoldfisher/OOP_Ex4/wiki/Code-Structure-and-Classes)
   
 ---------
 ## 4. Testing Class:
@@ -60,7 +60,7 @@ As required, we will write test units for each logic function. The first two tes
 | 15         | A3          |  4           |  1 min     |  1          | 234         | 117        |
 
 
-## A very detailed performence report can be found in our WIKI page: 
+## A very detailed performence report can be found in our WIKI page: [Algorithm Performence](https://github.com/haimgoldfisher/OOP_Ex4/wiki/Algorithm-Performence)
 
 ---------
 ## 6. GUI Interface:
@@ -81,6 +81,8 @@ Next to each Pokemon will appear the score value it holds. The type of Pokemon i
 </p>
 
 ## Link to a better quality video of the graphical interface on YouTube: https://www.youtube.com/watch?v=v6mJB2sEmvg
+
+## For more clips: [GUI Interface Clips](https://github.com/haimgoldfisher/OOP_Ex4/wiki/GUI-Interface-Clip)
 
 ---------
 ## 7. How to Download, Run and Use The Project:
