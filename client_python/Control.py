@@ -3,6 +3,7 @@ import json
 import math
 import threading
 import time
+from tkinter import Button
 
 import pygame
 
@@ -225,7 +226,6 @@ class Control:
 
     def button_control(self):
         img = pygame.image.load('stop.png').convert_alpha()
-        img2 = pygame.image.load('stop_on.png').convert_alpha()
         rect = img.get_rect(topleft=(5, 75))
         while 1 == 1:  # self.client.is_running():
             # pos = self.gui.pygame.mouse.get_pos()
@@ -233,15 +233,11 @@ class Control:
             # print(pos)
             if rect.collidepoint(pos):
                 print("on the stop button")
-                self.gui.screen.blit(img2, (5, 75))
                 if pygame.mouse.get_pressed()[0] == 1:
                     print("clicked stop")
                     pygame.time.wait(250)
                     pygame.quit()
-                    self.client.stop_connection()
                     exit(0)
-            else:
-                self.gui.screen.blit(img, (5, 75))
 
     def start_control(self):
         while self.client.is_running():
@@ -264,9 +260,11 @@ class Control:
         thread1 = threading.Thread(target=self.start_control)
         thread2 = threading.Thread(target=self.button_control)
         thread1.start()
-        # thread2.start()
+        thread2.start()
 
     def tmp_start(self):
+        img = pygame.image.load('stop.png').convert_alpha()
+        rect = img.get_rect(topleft=(5, 75))
         self.client.start()
         while self.client.is_running():
             self.load_pokemons()
@@ -277,6 +275,17 @@ class Control:
             self.complex_move_agents()
             time.sleep(self.refresh_time)
             self.client.move()
+
+            # stop button
+            pos = pygame.mouse.get_pos()
+            # print(pos)
+            if rect.collidepoint(pos):
+                if pygame.mouse.get_pressed()[0] == 1:
+                    print("clicked stop")
+                    pygame.time.wait(250)
+                    #pygame.quit()
+                    self.client.stop_connection()
+                    exit(0)
 
     def complex_move_agents(self):
         """
