@@ -180,7 +180,7 @@ class Control:
         than it will find the source of the edge he is lying on and will add the agent there.
         if there is more than 1 agent it will add them to the node match to their key number.
         """
-        if num == 1:
+        if num == 1 or num == 2:
             pokes_lst = copy.copy(self.pokemons)
             while num > 0 and len(pokes_lst) > 0:
                 poke, max_value = -1, -math.inf
