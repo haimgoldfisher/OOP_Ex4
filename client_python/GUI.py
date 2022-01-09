@@ -77,6 +77,21 @@ class GUI:
         else:
             self.screen.blit(img, (5, 75))
 
+        # draw edges
+        for nd in self.graph.key_nodes.values():
+            for child in nd.child_weight.keys():
+                src = nd
+                dest = self.graph.key_nodes.get(child)
+
+                # scaled positions
+                src_x = self.my_scale(float(src.pos[0]), x=True)
+                src_y = self.my_scale(float(src.pos[1]), y=True)
+                dest_x = self.my_scale(float(dest.pos[0]), x=True)
+                dest_y = self.my_scale(float(dest.pos[1]), y=True)
+
+                # draw the line
+                pygame.draw.line(self.screen, pygame.Color(61, 72, 126),
+                                 (src_x, src_y), (dest_x, dest_y))
         # draw nodes
         for n in self.graph.key_nodes.values():
             x = self.my_scale(float(n.pos[0]), x=True)
@@ -93,38 +108,36 @@ class GUI:
             rect = id_srf.get_rect(center=(x, y))
             self.screen.blit(id_srf, rect)
 
-        # draw edges
-        for nd in self.graph.key_nodes.values():
-            for child in nd.child_weight.keys():
-                src = nd
-                dest = self.graph.key_nodes.get(child)
-
-                # scaled positions
-                src_x = self.my_scale(float(src.pos[0]), x=True)
-                src_y = self.my_scale(float(src.pos[1]), y=True)
-                dest_x = self.my_scale(float(dest.pos[0]), x=True)
-                dest_y = self.my_scale(float(dest.pos[1]), y=True)
-
-                # draw the line
-                pygame.draw.line(self.screen, pygame.Color(61, 72, 126),
-                                 (src_x, src_y), (dest_x, dest_y))
-
         # draw agents
         for agent in agents:
             pygame.draw.circle(self.screen, pygame.Color(122, 61, 23),
                                (int((self.my_scale(agent.pos.x, x=True))), int((self.my_scale(agent.pos.y, y=True)))),
                                10)
+            # ball = pygame.image.load('pokeball.png')
+            # ball = pygame.transform.scale(ball, (40, 40))
+            # # ball.set_colorkey((163, 73, 164))
+            # self.screen.blit(ball,(int((self.my_scale(agent.pos.x, x=True)))-20, int((self.my_scale(agent.pos.y, y=True)))-20))
         # draw pokemons (note: should differ (GUI wise) between the up and the down pokemons (currently they are marked in the same way).
         for p in pokemons:
             if p.type < 0:
-                pygame.draw.circle(self.screen, pygame.Color(0, 255, 255),
-                                   (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
+                # pygame.draw.circle(self.screen, pygame.Color(0, 255, 255),
+                #                    (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
+                pokemon = pygame.image.load('pokemon1.jpg')
+                pokemon = pygame.transform.scale(pokemon, (40, 40))
+                # pokemon.set_colorkey((163, 73, 164))
+                self.screen.blit(pokemon, (
+                    int((self.my_scale(p.pos.x, x=True))) - 20, int((self.my_scale(p.pos.y, y=True))) - 20))
             else:
-                pygame.draw.circle(self.screen, pygame.Color(67, 89, 65),
-                                   (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
+                # pygame.draw.circle(self.screen, pygame.Color(67, 89, 65),
+                #                    (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True)))), 10)
+                pokemon = pygame.image.load('pokemon2.jpg')
+                pokemon = pygame.transform.scale(pokemon, (40, 40))
+                pokemon.set_colorkey((163, 73, 164))
+                self.screen.blit(pokemon, (
+                    int((self.my_scale(p.pos.x, x=True))) - 20, int((self.my_scale(p.pos.y, y=True))) - 20))
             pokemon_val = self.FONT.render(str(p.value), False, (255, 0, 0))
             self.screen.blit(pokemon_val,
-                             (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True))) + 4))
+                             (int((self.my_scale(p.pos.x, x=True))), int((self.my_scale(p.pos.y, y=True))) + 12))
         # update screen changes
         pygame.display.update()
 

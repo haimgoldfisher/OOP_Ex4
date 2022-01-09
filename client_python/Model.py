@@ -114,7 +114,6 @@ class Model:
         pokemon.agent_aloc = agent_key
         return agent_key
 
-
     def bet_ag_dest(self, agent, pokemon, src, dest):
         """
         this function check if pokemon is on the same edge as the agent and if he is in the same direction of the
@@ -192,7 +191,6 @@ class Model:
         time_to_poke = (scaled_poke_pos / agent.speed)
         return time_to_poke
 
-
     def calc_time(self, agent, pokemon):
         """
         this function calculates the time from the end of the current path of an agent to the given pokemon.
@@ -222,11 +220,11 @@ class Model:
         time_to_poke = path_time + (scaled_poke_pos / agent.speed)
         time_to_fdest = path_time + (edge_speed / agent.speed)
         if len(agent.time2final_dests) > 0:
-            time_to_poke += agent.time2final_dests[len(agent.time2final_dests)-1]
-            time_to_fdest += agent.time2final_dests[len(agent.time2final_dests)-1]
+            time_to_poke += agent.time2final_dests[len(agent.time2final_dests) - 1]
+            time_to_fdest += agent.time2final_dests[len(agent.time2final_dests) - 1]
         val = time_to_poke / pokemon.value
 
-        return time_to_poke, path, time_to_fdest,val
+        return time_to_poke, path, time_to_fdest, val
 
     def calc_time_rev(self, agent, pokemon):
         """
@@ -303,10 +301,10 @@ class Model:
             curr_flag = 0
             tmp_agent = None
             if len(agent.pokemons) >= 1:
-                tmp_agent = self.calc_time_rev(agent,pokemon)
-                if tmp_agent.time2pokes[len(tmp_agent.time2pokes)-1] < curr_time2poke:
+                tmp_agent = self.calc_time_rev(agent, pokemon)
+                if tmp_agent.time2pokes[len(tmp_agent.time2pokes) - 1] < curr_time2poke:
                     curr_flag = 1
-                    curr_time2poke = tmp_agent.time2pokes[len(tmp_agent.time2pokes)-1]
+                    curr_time2poke = tmp_agent.time2pokes[len(tmp_agent.time2pokes) - 1]
                     path = tmp_agent.path
                     curr_time2fdest = agent.time2final_dests
             if curr_time2poke < min_time2poke:
@@ -612,13 +610,6 @@ class Model:
     # new_time2final_dests = agent.time2final_dests
     # new_time2pokes = agent.time2pokes
 
-
-
-
-
-
-
-
     #
     #
     # def calc_time_tsp(self, agent, new_pokemon):
@@ -720,4 +711,3 @@ class Model:
     #     full_min_path.append(dests[min_perm[len(min_perm) - 1]])
     #
     #     return min_time2last_poke, full_min_path, min_time2all
-

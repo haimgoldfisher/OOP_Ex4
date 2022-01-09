@@ -4,6 +4,8 @@ import math
 import threading
 import time
 
+import pygame
+
 from GUI import GUI
 from Model import Model
 from DiGraph import DiGraph
@@ -28,6 +30,7 @@ class Control:
     agents - a list of all the agents in this game
     flag - a flag that tells the model what algorithm is better for this case
     """
+
     def __init__(self):
         self.gui = GUI()
         self.model = Model()
@@ -188,15 +191,15 @@ class Control:
                 src, dest = self.model.get_poke_edge(poke)
                 fnd = self.graph.key_nodes.get(src)
                 loc = Location(float(fnd.pos[0]), float(fnd.pos[1]), float(fnd.pos[2]))
-                agent = Agent(num-1, 0, src, -1, 1, loc)
+                agent = Agent(num - 1, 0, src, -1, 1, loc)
                 booly = self.client.add_agent("{\"id\":%d}" % src)
                 # self.agents.append(agent)
                 num -= 1
             while num > 0:
                 fnd = self.graph.key_nodes.get(num)
                 loc = Location(float(fnd.pos[0]), float(fnd.pos[1]), float(fnd.pos[2]))
-                agent = Agent(num-1, 0, num-1, -1, 1, loc)
-                self.client.add_agent("{\"id\":%d}" % num-1)
+                agent = Agent(num - 1, 0, num - 1, -1, 1, loc)
+                self.client.add_agent("{\"id\":%d}" % num - 1)
                 # self.agents.append(agent)
                 num -= 1
         else:
@@ -220,52 +223,51 @@ class Control:
         time_left = str(int(int(self.client.time_to_end()) / 1000))
         return points, moves, time_left
 
-    def start(self):
-        self.client.start()
-        self.load_pokemons()
-        self.load_agents()
-        t1 = threading.Thread(target=self.thread1_func)
-        t2 = threading.Thread(target=self.thread2_func)
-        t1.start()
-        t2.start()
+    def button_control(self):
+        img = pygame.image.load('stop.png').convert_alpha()
+        img2 = pygame.image.load('stop_on.png').convert_alpha()
+        rect = img.get_rect(topleft=(5, 75))
+        while 1 == 1:  # self.client.is_running():
+            # pos = self.gui.pygame.mouse.get_pos()
+            pos = pygame.mouse.get_pos()
+            # print(pos)
+            if rect.collidepoint(pos):
+                print("on the stop button")
+                self.gui.screen.blit(img2, (5, 75))
+                if pygame.mouse.get_pressed()[0] == 1:
+                    print("clicked stop")
+                    pygame.time.wait(250)
+                    pygame.quit()
+                    self.client.stop_connection()
+                    exit(0)
+            else:
+                self.gui.screen.blit(img, (5, 75))
+
+    def start_control(self):
         while self.client.is_running():
             self.load_pokemons()
             self.load_agents()
-        # while self.client.is_running():
-        #     self.load_pokemons()
-        #     self.load_agents()
-        #     self.model.update(self.agents, self.pokemons)
-        #     self.gui.update(self.agents, self.pokemons)
-        #     self.complex_move_agents()
-        #     time.sleep(self.refresh_time)
-        #     self.client.move()
-
-
-    def thread1_func(self):
-        while self.client.is_running():
-            # self.load_pokemons()
-            # self.load_agents()
-            self.model.update(self.agents, self.pokemons)
+            self.model.update(self.agents, self.pokemons, self.flag)
+            p, m, t = self.get_params()
+            self.gui.update(self.agents, self.pokemons, p, m, t)
             self.complex_move_agents()
             time.sleep(self.refresh_time)
             self.client.move()
 
-    def thread2_func(self):
-        while self.client.is_running():
-            # self.load_pokemons()
-            # self.load_agents()
-            p, m, t = self.get_params()
-            self.gui.update(self.agents, self.pokemons, p, m, t)
-
     def start_reg(self):
         """
-        this function start the game and in a while loop it asks from the server for the updated data and pass it
-        to the model (to allocate new agents if we need to) and to the gui.
-        then its waiting the amount of time needed until the next update have to be made and move the agents.
-        """
-
+         this function start the game and in a while loop it asks from the server for the updated data and pass it
+         to the model (to allocate new agents if we need to) and to the gui.
+         then its waiting the amount of time needed until the next update have to be made and move the agents.
+         """
         self.client.start()
+        thread1 = threading.Thread(target=self.start_control)
+        thread2 = threading.Thread(target=self.button_control)
+        thread1.start()
+        # thread2.start()
 
+    def tmp_start(self):
+        self.client.start()
         while self.client.is_running():
             self.load_pokemons()
             self.load_agents()
@@ -278,12 +280,12 @@ class Control:
 
     def complex_move_agents(self):
         """
-        this function go over the agent list and tell them what is their next destination if they are waiting for
-        instructions.
-        then it calculates the time the program have to wait untill the next call to "move" by going over the
-        agents and check which one will arrive to his next node or his pokemon the fastest. than it updates the
-        times of each agent.
-        """
+       this function go over the agent list and tell them what is their next destination if they are waiting for
+       instructions.
+       then it calculates the time the program have to wait untill the next call to "move" by going over the
+       agents and check which one will arrive to his next node or his pokemon the fastest. than it updates the
+       times of each agent.
+       """
         for agent in self.agents:
             # if len(agent.path) == 0 or agent.time2poke <= 0:
             #     agent.pokemons = []
@@ -316,7 +318,7 @@ class Control:
             min_measure = min(lst)
             min_time2dest = min(min_time2dest, min_measure)
         print()
-        if min_time2dest<=0:
+        if min_time2dest <= 0:
             min_time2dest = 0.100
         for agent in self.agents:
             for i in range(len(agent.time2pokes)):
@@ -346,7 +348,6 @@ class Control:
     #         self.load_agents()
     #         self.model.update(self.agents, self.pokemons, self.flag)
     #         self.model.update(self.agents, self.pokemons, self.flag)
-
 
     # def start3(self):  # with stop button
     #     self.client.start()
@@ -384,10 +385,7 @@ class Control:
     #                 exit(0)
 
 
-
-
-
 if __name__ == '__main__':
     c = Control()
     c.load()
-    c.start_reg()
+    c.tmp_start()

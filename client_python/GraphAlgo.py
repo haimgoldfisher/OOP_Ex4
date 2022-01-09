@@ -1,13 +1,12 @@
-import itertools
 import math
 import queue
-from typing import List
+import json
 import GraphInterface
 from DiGraph import DiGraph
+from Loc_Node_Edge import Node, Location
 
 
-
-class GraphAlgo():
+class GraphAlgo:
     """
     this class represent a set of algorithms of graphs. it contains only 1 thing:
     graph - the graph the algorithms will be used on.
@@ -119,3 +118,23 @@ class GraphAlgo():
         ans = (maximum, src)
         return ans, times, previous
 
+    def load_from_json(self, path):
+        with open(path, 'r') as graph_json_str:
+            graph_jobj = json.load(graph_json_str)
+            edges = graph_jobj.get("Edges")
+            nodes = graph_jobj.get("Nodes")
+            for d in nodes:
+                node_id = d.get("id")
+                pos = d.get("pos")
+                if pos is not None:
+                    pos = pos.split(",")
+                    new_loc = Location(pos[0], pos[1], pos[2])
+                    self.graph.add_node(node_id, new_loc.pos)
+                else:
+                    self.graph.add_node(node_id, None)
+
+            for d in edges:
+                src = d["src"]
+                w = d["w"]
+                dest = d["dest"]
+                self.graph.add_edge(src, dest, w)

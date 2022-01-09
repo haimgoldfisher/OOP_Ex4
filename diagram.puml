@@ -17,11 +17,6 @@ class DiGraph
 
 }
 
-interface GraphAlgoInterface
-{
-
-}
-
 class GraphAlgo
 {
 
@@ -37,7 +32,17 @@ class Pokemon
 
 }
 
-class MyGame
+class Model
+{
+
+}
+
+class Control
+{
+
+}
+
+class GUI
 {
 
 }
@@ -47,29 +52,25 @@ class client
 
 }
 
-class student_code
-{
-
-}
-
 Loc_Node_Edge --|> DiGraph
-GraphAlgoInterface ..|> GraphAlgo
 GraphInterface ..|> DiGraph
 DiGraph --|> GraphAlgo
+
+DiGraph --|> GUI
 
 Loc_Node_Edge --|> Pokemon
 Loc_Node_Edge --|> Agent
 
-Pokemon --> Agent
-Agent --> Pokemon
+Pokemon --|> Agent
+Agent --|> Pokemon
 
-Loc_Node_Edge --|> MyGame
-DiGraph --|> MyGame
-GraphAlgo --|> MyGame
-Pokemon --|> MyGame
-client --|> MyGame
-Agent --|> MyGame
+GraphAlgo --|> Model
+GraphAlgo --|> Control
 
-
+Pokemon --|> Control
+Agent --|> Control
+Control --|> GUI
+Control --|> Model
+client --|> Control
 @enduml
 @enduml
