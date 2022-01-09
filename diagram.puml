@@ -52,6 +52,11 @@ class client
 
 }
 
+class main
+{
+
+}
+
 Loc_Node_Edge --|> DiGraph
 GraphInterface ..|> DiGraph
 DiGraph --|> GraphAlgo
@@ -72,5 +77,8 @@ Agent --|> Control
 Control --|> GUI
 Control --|> Model
 client --|> Control
+
+Control ---|> main
+
 @enduml
 @enduml
