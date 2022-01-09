@@ -99,6 +99,11 @@ Run the Server from cmd in the folder which contains 'Ex4_Server_v0.0.jar', choo
 ```
 java -jar Ex4_Server_v0.0.jar [0,15]
 ```
+
+Then, open the folowing folders and then main.py, run it:
+```
+OOP_Ex4 -> client_python -> main.py -> RUN
+```
 ---------
 
 This project was done by using Python Interpreter: Python 3.9
