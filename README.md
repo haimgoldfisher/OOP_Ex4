@@ -55,7 +55,7 @@ As required, we will write test units for each logic function. The first two tes
 | 10         | A2          |  5           |  30 sec    |  1          |  65         | 32         |
 | 11         | A2          |  6           |  1 min     |  3          | 1429        | 566        |
 | 12         | A3          |  1           |  30 sec    |  1          | 40          | 26         |
-| 13         | A3          |  2           |  1 min     |  2          | 201         | 184        |
+| 13         | A3          |  2           |  1 min     |  2          | 217         | 177        |
 | 14         | A3          |  3           |  30 sec    |  3          | 115         | 123        |
 | 15         | A3          |  4           |  1 min     |  1          | 234         | 117        |
 
